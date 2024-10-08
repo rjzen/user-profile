@@ -1,17 +1,23 @@
-import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons'; // for the arrow icon
-import { FontAwesome } from '@expo/vector-icons'; // for the profile icon
+import React, { useState } from 'react';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Switch } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 
 const ProfileScreen = ({ navigation }) => {
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDarkMode(!isDarkMode);
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && styles.darkContainer]}>
       {/* Back Arrow and Profile Header */}
       <View style={styles.header}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
-        <MaterialIcons name="arrow-back" size={24} color="black" />
-      </TouchableOpacity>
-        <Text style={styles.headerText}>Profile</Text>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={24} color={isDarkMode ? "white" : "black"} />
+        </TouchableOpacity>
+        <Text style={[styles.headerText, isDarkMode && styles.darkText]}>Profile</Text>
       </View>
 
       {/* Profile Image and Info */}
@@ -20,60 +26,65 @@ const ProfileScreen = ({ navigation }) => {
           style={styles.profileImage}
           source={{ uri: 'https://scontent.fmnl4-7.fna.fbcdn.net/v/t39.30808-1/404113880_1501059937353240_3832696848455390261_n.jpg?stp=dst-jpg_s200x200&_nc_cat=104&ccb=1-7&_nc_sid=0ecb9b&_nc_eui2=AeFW22X4TgDa3Ra8k4OKDpbA-hX5SCcssUz6FflIJyyxTC-0PUOIcMxghIGbjypcHrBhKQWRdXNHz60vk-nLXhd4&_nc_ohc=V3aTkQYQdwwQ7kNvgFK45L1&_nc_ht=scontent.fmnl4-7.fna&_nc_gid=AeQn2q2oehn6DxwMlzS05FU&oh=00_AYC1By3zKye90Kc6vWovk2KeN3ggcGfxemUKZiEOmIEnAQ&oe=67087255' }} // Replace with actual image URL
         />
-        <Text style={styles.name}>Josiah Joshua D. Ratunil</Text>
-        <Text style={styles.designation}>Product Designer</Text>
+        <Text style={[styles.name, isDarkMode && styles.darkText]}>Josiah Joshua D. Ratunil</Text>
+        <Text style={[styles.designation, isDarkMode && styles.darkText]}>Product Designer</Text>
 
         {/* Statistics */}
         <View style={styles.statsSection}>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>43</Text>
-            <Text style={styles.statLabel}>Job Applied</Text>
+            <Text style={[styles.statNumber, isDarkMode && styles.darkText]}>43</Text>
+            <Text style={[styles.statLabel, isDarkMode && styles.darkText]}>Job Applied</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>16</Text>
-            <Text style={styles.statLabel}>Received</Text>
+            <Text style={[styles.statNumber, isDarkMode && styles.darkText]}>16</Text>
+            <Text style={[styles.statLabel, isDarkMode && styles.darkText]}>Received</Text>
           </View>
           <View style={styles.statItem}>
-            <Text style={styles.statNumber}>9</Text>
-            <Text style={styles.statLabel}>Contacted</Text>
+            <Text style={[styles.statNumber, isDarkMode && styles.darkText]}>9</Text>
+            <Text style={[styles.statLabel, isDarkMode && styles.darkText]}>Contacted</Text>
           </View>
         </View>
       </View>
 
       {/* Profile Status Section */}
-      <Text style={styles.sectionTitle}>Profile Status</Text>
+      <Text style={[styles.sectionTitle, isDarkMode && styles.darkText]}>Profile Status</Text>
 
       <View style={styles.statusContainer}>
         {/* Education Card */}
-        <TouchableOpacity style={styles.statusCard}>
+        <TouchableOpacity style={[styles.statusCard, isDarkMode && styles.darkCard]}>
           <FontAwesome name="graduation-cap" size={24} color="#F4D03F" />
           <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>Education</Text>
-            <Text style={styles.cardSteps}>03 Steps Left</Text>
+            <Text style={[styles.cardTitle, isDarkMode && styles.darkText]}>Education</Text>
+            <Text style={[styles.cardSteps, isDarkMode && styles.darkText]}>03 Steps Left</Text>
           </View>
-          <MaterialIcons name="arrow-forward" size={24} color="black" />
+          <MaterialIcons name="arrow-forward" size={24} color={isDarkMode ? "white" : "black"} />
         </TouchableOpacity>
 
         {/* Professional Card */}
-        <TouchableOpacity style={styles.statusCard}>
+        <TouchableOpacity style={[styles.statusCard, isDarkMode && styles.darkCard]}>
           <FontAwesome name="briefcase" size={24} color="#F4D03F" />
           <View style={styles.cardInfo}>
-            <Text style={styles.cardTitle}>Professional</Text>
-            <Text style={styles.cardSteps}>02 Steps Left</Text>
+            <Text style={[styles.cardTitle, isDarkMode && styles.darkText]}>Professional</Text>
+            <Text style={[styles.cardSteps, isDarkMode && styles.darkText]}>02 Steps Left</Text>
           </View>
-          <MaterialIcons name="arrow-forward" size={24} color="black" />
+          <MaterialIcons name="arrow-forward" size={24} color={isDarkMode ? "white" : "black"} />
         </TouchableOpacity>
       </View>
 
       {/* Pro Account Section */}
-      <View style={styles.proAccountSection}>
+      <View style={[styles.proAccountSection, isDarkMode && styles.darkCard]}>
         <View style={styles.proInfo}>
-          <Text style={styles.proTitle}>Get Pro</Text>
-          <Text style={styles.proPrice}>Buy Pro Account $8.5/M</Text>
+          <Text style={[styles.proTitle, isDarkMode && styles.darkText]}>Get Pro</Text>
+          <Text style={[styles.proPrice, isDarkMode && styles.darkText]}>Buy Pro Account $8.5/M</Text>
         </View>
         <TouchableOpacity style={styles.buyNowButton}>
           <Text style={styles.buyNowText}>Buy Now</Text>
         </TouchableOpacity>
+      </View>
+
+      <View style={styles.themeToggleSection}>
+        <Text style={[styles.toggleText, isDarkMode && styles.darkText]}>Toggle Theme</Text>
+        <Switch value={isDarkMode} onValueChange={toggleTheme} />
       </View>
     </View>
   );
@@ -86,11 +97,14 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#F8F8F8',
   },
+  darkContainer: {
+    backgroundColor: '#121212',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 40,
-    marginTop: 30
+    marginTop: 30,
   },
   headerText: {
     marginLeft: 10,
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     borderRadius: 50,
-    backgroundColor: '#ddd', // Placeholder color
+    backgroundColor: '#ddd',
     marginBottom: 10,
   },
   name: {
@@ -160,6 +174,10 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
+  darkCard: {
+    backgroundColor: '#1E1E1E',
+    shadowColor: '#000',
+  },
   cardInfo: {
     flex: 1,
     marginHorizontal: 10,
@@ -208,6 +226,20 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#FFF',
     fontWeight: 'bold',
+  },
+  themeToggleSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  toggleText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  darkText: {
+    color: '#fff',
   },
 });
 

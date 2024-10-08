@@ -123,7 +123,7 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
           }
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: '#6C5CE7',
+        tabBarActiveTintColor: '#F4D03F',
         tabBarInactiveTintColor: 'gray',
         headerTitleAlign: 'center',
         tabBarLabelStyle: { fontSize: 12 },

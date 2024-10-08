@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   goto: {
-    backgroundColor: '#6C5CE7',
+    backgroundColor: '#F4D03F',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 40,
