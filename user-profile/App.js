@@ -118,6 +118,8 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
             iconName = 'magnify';
           } else if (route.name === 'Profile') {
             iconName = 'account';
+          } else if (route.name === 'Logout') {
+            iconName = 'exit-to-app';
           }
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
@@ -144,6 +146,21 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
       <Tab.Screen name="Home" component={HomeStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Explore" component={ExploreStackScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileStackScreen} options={{ headerShown: false }} />
+      <Tab.Screen
+        name="Logout"
+        options={{
+          headerShown: false,
+          tabBarLabel: 'Logout',
+        }}
+      >
+        {() => (
+          <View style={styles.authContainer}>
+            <Text style={styles.title}>Goodbye...</Text>
+            <Text style={styles.emailText}>{user.email}</Text>
+            <Button title="Logout" onPress={handleAuthentication} color="#e74c3c" />
+          </View>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
@@ -152,14 +169,14 @@ const AuthenticatedScreen = ({ user, handleAuthentication }) => {
 export default function App() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null); // null indicates no user is logged in initially
+  const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
 
   const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
-      setUser(authUser ? authUser : null); // Update user state based on authentication status
+      setUser(authUser ? authUser : null);
     });
     return () => unsubscribe();
   }, [auth]);
@@ -168,10 +185,10 @@ export default function App() {
     try {
       if (isLogin) {
         const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        setUser(userCredential.user); // Set user after sign-in
+        setUser(userCredential.user);
       } else {
         const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-        setUser(userCredential.user); // Set user after sign-up
+        setUser(userCredential.user);
       }
     } catch (error) {
       console.error('Authentication error:', error.message);
@@ -181,7 +198,10 @@ export default function App() {
   return (
     <NavigationContainer>
       {user ? (
-        <AuthenticatedScreen user={user} handleAuthentication={handleAuthentication} />
+        <AuthenticatedScreen user={user} handleAuthentication={async () => {
+          await signOut(auth);
+          setUser(null);
+        }} />
       ) : (
         <ScrollView>
           <AuthScreen
@@ -212,6 +232,11 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 24,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  emailText: {
+    fontSize: 16,
     marginBottom: 16,
     textAlign: 'center',
   },
