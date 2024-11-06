@@ -3,9 +3,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, View, TextInput, Button, ScrollView } from 'react-native';
+import { Text, View, TextInput, Button, ScrollView, Alert, StyleSheet } from 'react-native';
 import { initializeApp } from '@firebase/app';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from '@firebase/auth';
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail, onAuthStateChanged, signOut } from '@firebase/auth';
 
 // Import screens from separate files
 import HomeScreen from './src/screens/HomeScreen';
@@ -25,13 +25,14 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
 // AuthScreen Component
-const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication }) => {
+const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogin, handleAuthentication, handlePasswordReset }) => {
   return (
     <View style={styles.authContainer}>
       <Text style={styles.title}>{isLogin ? 'Sign In' : 'Sign Up'}</Text>
-      
+
       <TextInput
         style={styles.input}
         value={email}
@@ -50,6 +51,12 @@ const AuthScreen = ({ email, setEmail, password, setPassword, isLogin, setIsLogi
         <Button title={isLogin ? 'Sign In' : 'Sign Up'} onPress={handleAuthentication} color="#3498db" />
       </View>
 
+      {isLogin && (
+        <Text style={styles.resetText} onPress={handlePasswordReset}>
+          Forgot Password?
+        </Text>
+      )}
+
       <View style={styles.bottomContainer}>
         <Text style={styles.toggleText} onPress={() => setIsLogin(!isLogin)}>
           {isLogin ? 'Need an account? Sign Up' : 'Already have an account? Sign In'}
@@ -64,7 +71,7 @@ const HomeStack = createStackNavigator();
 function HomeStackScreen() {
   return (
     <HomeStack.Navigator>
-      <HomeStack.Screen  
+      <HomeStack.Screen
         name="Home1"
         component={HomeScreen}
         options={{ headerShown: false }}
@@ -79,7 +86,7 @@ const ExploreStack = createStackNavigator();
 function ExploreStackScreen() {
   return (
     <ExploreStack.Navigator>
-      <ExploreStack.Screen  
+      <ExploreStack.Screen
         name="Explore1"
         component={ExploreScreen}
         options={{ headerShown: false }}
@@ -93,7 +100,7 @@ const ProfileStack = createStackNavigator();
 function ProfileStackScreen() {
   return (
     <ProfileStack.Navigator>
-      <ProfileStack.Screen 
+      <ProfileStack.Screen
         name="Profile1"
         component={ProfileScreen}
         options={{ headerShown: false }}
@@ -172,8 +179,6 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [isLogin, setIsLogin] = useState(true);
 
-  const auth = getAuth(app);
-
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (authUser) => {
       setUser(authUser ? authUser : null);
@@ -195,6 +200,20 @@ export default function App() {
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      Alert.alert('Enter your email address to reset the password.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      Alert.alert('Password reset email sent!', 'Check your inbox for instructions.');
+    } catch (error) {
+      console.error('Password reset error:', error.message);
+      Alert.alert('Error', 'Failed to send password reset email. Please check your email and try again.');
+    }
+  };
+
   return (
     <NavigationContainer>
       {user ? (
@@ -212,6 +231,7 @@ export default function App() {
             isLogin={isLogin}
             setIsLogin={setIsLogin}
             handleAuthentication={handleAuthentication}
+            handlePasswordReset={handlePasswordReset}
           />
         </ScrollView>
       )}
